@@ -207,7 +207,7 @@ class SpotifyOAuth(object):
         response = requests.post(self.OAUTH_TOKEN_URL, data=payload,
             headers=headers, verify=True)
         if response.status_code is not 200:
-            raise SpotifyOauthError(response.reason)
+            raise SpotifyOauthError("%s : %s" % (response.reason, response.json()))
         token_info = response.json()
         token_info = self._add_custom_values_to_token_info(token_info)
         self._save_token_info(token_info)
@@ -259,4 +259,3 @@ class SpotifyOAuth(object):
 
     def _warn(self, msg):
         print('warning:' + msg, file=sys.stderr)
-
