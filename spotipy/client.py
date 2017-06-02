@@ -371,20 +371,26 @@ class Spotify(object):
                          limit=limit, offset=offset, fields=fields,
                          market=market)
 
-    def user_playlist_create(self, user, name, public=True):
+    def user_playlist_create(self, user, name, public=True, collaborative=False,
+                             description=''):
         ''' Creates a playlist for a user
 
             Parameters:
                 - user - the id of the user
                 - name - the name of the playlist
                 - public - is the created playlist public
+                - collaborative - can other users modify the playlist
+                    Note: You can only set collaborative to true on non-public
+                    playlists.
+                - description - the description of the playlist
         '''
-        data = {'name': name, 'public': public}
-        return self._post("users/%s/playlists" % (user,), payload=data)
+        data = {'name':name, 'public':public, 'collaborative':collaborative,
+                'description':description }
+        return self._post("users/%s/playlists" % (user,), payload = data)
 
     def user_playlist_change_details(
             self, user, playlist_id, name=None, public=None,
-            collaborative=None):
+            collaborative=None, description=None):
         ''' Changes a playlist's name and/or public/private state
 
             Parameters:
@@ -393,6 +399,7 @@ class Spotify(object):
                 - name - optional name of the playlist
                 - public - optional is the playlist public
                 - collaborative - optional is the playlist collaborative
+                - description - optional description of the playlist
         '''
         data = {}
         if isinstance(name, basestring):
@@ -401,6 +408,8 @@ class Spotify(object):
             data['public'] = public
         if isinstance(collaborative, bool):
             data['collaborative'] = collaborative
+        if isinstance(description, basestring):
+            data['description'] = description
         return self._put("users/%s/playlists/%s" % (user, playlist_id),
                          payload=data)
 
